@@ -14,7 +14,6 @@ fs.readdir(filePAth,{withFileTypes:true},(err, files)=>{
             }else {
                 console.log( file.name + ' It is file')
             }
-
         })
     }
 })
