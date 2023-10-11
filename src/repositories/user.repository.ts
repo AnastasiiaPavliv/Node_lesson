@@ -7,7 +7,7 @@ class UserRepository {
   return await User.find()
  }
  public async getOneByParams(params:FilterQuery<IUser>): Promise<IUser>{
-  return await User.findById(params)
+  return await User.findOne(params)
  }
  public async findById(userId: string): Promise<IUser>{
   return await User.findById(userId)
