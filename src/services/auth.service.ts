@@ -2,7 +2,7 @@ import {IUserCredentials} from "../types/user.type";
 import {ApiError} from "../errors/api.errors";
 import {userRepository} from "../repositories/user.repository";
 import {passwordService} from "./password.service";
-import { ITokenPair} from "../types/token.type";
+import {IToken, ITokenPair, ITokenPayload} from "../types/token.type";
 import {tokenService} from "./token.service";
 import {tokenRepository} from "../repositories/token.repository";
 
@@ -27,9 +27,21 @@ public async login(dto:IUserCredentials):Promise<ITokenPair>{
             throw new ApiError ('Invalid credentials provided', 401)
         }
 
-        const tokensPair= await tokenService.generateTokenPair(
+        const tokensPair= tokenService.generateTokenPair(
             {userId: user._id, name:user.name})
         await tokenRepository.create({ ...tokensPair, _userId: user._id });
+        return tokensPair
+    }catch (e) {
+        throw new ApiError(e.message, e.status)
+    }
+}
+public async refresh(payload:ITokenPayload, refreshToken:string):Promise<ITokenPair>{
+    try {
+        const tokensPair= tokenService.generateTokenPair({userId: payload.userId, name:payload.name})
+        await Promise.all([
+            tokenRepository.create({ ...tokensPair, _userId: payload.userId }),
+        tokenRepository.deleteOne({ refreshToken}),
+    ])
         return tokensPair
     }catch (e) {
         throw new ApiError(e.message, e.status)

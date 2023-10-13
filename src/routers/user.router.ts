@@ -6,25 +6,26 @@ import {userController} from "../controllers/user.controller";
 import {IUser} from "../types/user.type";
 import {userMiddleware} from "../middlewares/user.middleware";
 import {commonMiddleware} from "../middlewares/common.middleware";
+import {authMiddleware} from "../middlewares/auth.middleware";
 
 const router = Router();
 
 router.get("/", userController.getAll);
 
-router.post("/",
-    commonMiddleware.isBodyValidId(UserValidator.create),
-    userController.createUser);
-
 router.get("/:userId",
+    authMiddleware.checkAccessToken,
     commonMiddleware.isValidId("userId"),
     userMiddleware.getByIdOrThrow,
     userController.getById);
 
-router.delete("/:userId",
-    commonMiddleware.isValidId('userId'),
-    userMiddleware.getByIdOrThrow,
-    userController.deleteById)
 router.put("/:userId",
+    authMiddleware.checkAccessToken,
     commonMiddleware.isValidId('userId'),
+    commonMiddleware.isBodyValidId(UserValidator.update),
     userController.updateUser);
+
+router.delete("/:userId",
+    authMiddleware.checkAccessToken,
+    commonMiddleware.isValidId('userId'),
+    userController.deleteById)
 export const userRouter = router;

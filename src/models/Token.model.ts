@@ -16,6 +16,6 @@ const tokensSchema = new Schema({
         required:true,
         ref:User
     }
-});
+},  { timestamps: true, versionKey: false },);
 
 export const Token = model<IToken>("token", tokensSchema);
