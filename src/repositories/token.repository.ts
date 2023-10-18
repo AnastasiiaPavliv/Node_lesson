@@ -7,7 +7,7 @@ export class TokenRepository {
         return await Token.create(dto);
     }
     public async findOne(params: FilterQuery<IToken>): Promise<IToken> {
-       return await Token.create(params);
+       return await Token.findOne(params);
     }
     public async deleteOne(params: FilterQuery<IToken>): Promise<void> {
          await Token.create(params);
